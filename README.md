@@ -69,8 +69,6 @@ public class CommonController {
 #### - 회원정보 변경
 
 - 카카오맵 주소 Api 사용
-  
-<img src=readme/mypage_edit_kakao.png style="width:300px"><br>
 
 - 비밀번호 체크
 <img src=readme/mypage_edit2.png style="width:300px"><br>
@@ -88,20 +86,75 @@ ____
 <img src=readme/subscribeMain.png style="width:300px"><br>
 
 #### 2) 나무구독
+- forEach문과 if문을 사용해 나무 구독 상품 출력(6.22 추가)
+  -treeServiceImpl에 getTeaList 추가
+
 - 10개까지 선택 가능(베이스 3개까지)
 <img src=readme/subscribeTree.png style="width:300px"><br>
 
-- 추가 선택에 따라 가격변동
+- 추가 선택에 따라 가격변동(6.22 추가)
 <img src=readme/subscribeTree1.png style="width:300px"><br>
+* 고민해볼 점 : 추가 상품이 늘어날 경우를 대비해 체크리스트를 동적으로 생성하는 방법
 
 - 카카오 결제 api
 <img src=readme/subscribeTree3.jpg style="width:300px"><br>
+```js
+    // 카카오 구매 API
+    function checkModule() {
+  	  var Imp = window.IMP;
+  	  let price = $('#totalPrice').val();
+ 
+    //let Imp = window.IMP;
+    IMP.init('imp45072851');
+    
+    IMP.request_pay({
+        pg : 'kakaopay', // version 1.1.0부터 지원.
+        pay_method : 'kakaopay',
+        merchant_uid : "${sub.subDate}",
+        name : '나무 구독 결제', // 상품명
+        amount : price, // 상품가격
+        buyer_email : "${member.memberEmail}", // 구매자 이메일
+        buyer_name : "${member.memberName}", // 구매자 이름
+        buyer_tel : "${member.memberPhone}", // 구매자 연락처
+        buyer_addr : "${member.memberAddress}", // 구매자 주소
+    }, function(rsp) {
+        if ( rsp.success ) {
+           
+                  var msg = '결제가 완료되었습니다.';
+                  msg += '고유ID : ' + rsp.imp_uid;
+                  msg += '상점 거래ID : ' + rsp.merchant_uid;
+                  msg += "가격:" + rsp.paid_amount;
+                  msg += '카드 승인번호 : ' + rsp.apply_num;
+                  
+                  $.ajax({
+  					type : 'POST',
+  					url : 'insertSubTree.do',
+  					dataType : 'text',// form에 있는 데이터들을 controller로 text타입으로 
+  					data : $('#tree_form').serialize(),
+  					success : function(data) {
+  						alert(data);
+  						window.location.href = ("mypage.do"); //JSP 이동 페이지 적기  
+  					},
+  					error : function(e) {
+  						console.log(e);
+  					}
+  				});
+
+        } else {
+            var msg = '결제에 실패하였습니다.';
+            msg += '에러내용 : ' + rsp.error_msg;
+        }
+        alert(msg);
+    });
+    
+    }
+```
 
 #### 3) 결제 후 마이페이지 구독 정보
 <img src=readme/subscribeTree4.png style="width:300px"><br>
 취향선택 태그 출력
 ```js
-         // 구독 내역 없을 시 구독정보 박스 숨기기
+         // 구독 내역 없을 시 구독정보 박스 숨기기 6.25 추가
          console.log("${sub.orderCate}");
          if ("${sub.orderCate}" == "") {
             //document.getElementByid("subscribe_order").sytle.display="none";
@@ -166,6 +219,12 @@ ____
 
 #### 4) 구독 정보 수정
 <img src=readme/subscribeTree_edit.png style="width:300px"><br>
+- data값의 유무로 insert/update 구분
+```java
+<% 
+   String data =  request.getParameter("data"); //data 를 String 으로 변환 
+%> 
+```
 - 체크박스 불러와서 다시 화면에 뿌려주도록 Ajax 사용
 
 ```java
@@ -189,11 +248,7 @@ ____
 		return json;
 	}
 ```
-```java
-<% 
-   String data =  request.getParameter("data"); //data 를 String 으로 변환 
-%> 
-```
+
 ```js
       // 업데이트 시 기존 사용자의 선택 불러오기(오류 수정)
       let data = <%=data%>;
@@ -232,4 +287,3 @@ ____
 ### 5. 상품
 ____
 
-도록 Ajax 사용
