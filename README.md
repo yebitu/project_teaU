@@ -474,8 +474,10 @@ ____
   <img src="readme/shop4.jpg">
 - 상품 수정 화면
   <img src="readme/shop.jpg">
-  기존 데이터 불러오기
-  >shopAdmin.jsp
+
+기존 데이터 불러오기
+>shopAdmin.jsp
+
 ```
 // 값 불러오기
             let teaName = obj['shopInfo'].teaName;
