@@ -7,10 +7,6 @@
 - 개요 : Spring framework MVC 쇼핑몰 프로젝트 
 
 ____
-## 개발 일정
-
-
-____
 
 ## DB
 Click [AQUERY ERD](https://aquerytool.com/aquerymain/index/?rurl=b5b8f417-40c2-4a4e-adcb-bf19dd4ed1dd&/)
@@ -38,6 +34,7 @@ ___
 #### - 회원정보 변경
 
 - 카카오맵 주소 Api 사용
+
 ![mypage.jsp](readme/mypage_edit_kakao.png)
 
 - 비밀번호 체크
