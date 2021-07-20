@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<settings>
+	  	<!-- 자동으로 카멜케이스 규칙으로 변환 -->
+	  	<setting name="mapUnderscoreToCamelCase" value="true"/>
+	 </settings> 
+	 
+	<!-- Alias 설정 -->
+	<typeAliases>
+		<typeAlias type="com.teau.biz.subscribe.SubVO" alias="sub"></typeAlias>
+		<typeAlias type="com.teau.biz.subscribe.SubTeaVO" alias="subTea"></typeAlias>
+		<typeAlias type="com.teau.biz.board.BoardVO" alias="board"></typeAlias>
+		<typeAlias type="com.teau.biz.board.ReplyVO" alias="reply"></typeAlias>
+		<typeAlias type="com.teau.biz.board.BoardLikeVO" alias="boardLike"></typeAlias>		
+		<typeAlias type="com.teau.biz.member.MemberVO" alias="member"></typeAlias>
+		<typeAlias type="com.teau.biz.orders.OrdersVO" alias="orders"></typeAlias>
+		<typeAlias type="com.teau.biz.orders.CartVO" alias="cart" ></typeAlias>
+		<typeAlias type="com.teau.biz.shop.ShopVO" alias="shop"></typeAlias>
+		
+ 	</typeAliases>
+
+	<!-- Sql Mapper 설정 -->
+	<mappers>
+		<mapper resource="mappings/board-mapping.xml" />
+		<mapper resource="mappings/boardLike-mapping.xml" />
+		<mapper resource="mappings/reply-mapping.xml" />
+		<mapper resource="mappings/member-mapping.xml" />
+		<mapper resource="mappings/subscribe-mapping.xml" />
+		<mapper resource="mappings/shop-mapping.xml"/>
+        <mapper resource="mappings/orders-mapping.xml"/>
+		<mapper resource="mappings/teaFinder-mapping.xml" />
+		<mapper resource="mappings/cart-mapping.xml" />
+	</mappers>
+</configuration>
+
+<!-- 마이바티스 널갑처리 -->
+<!-- <settings> 
+<setting name="cacheEnabled" value="false" /> 
+<setting name="jdbcTypeForNull" value="NULL" /> 
+</settings>
+ -->

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SubDAO">	
+	<resultMap type="sub" id="subTreeList">
+		<id property="subId" column="SUB_ID"/>
+		<result property="orderCate" column="ORDER_CATE"/>
+		<result property="subUser" column="SUB_USER"/>
+		<result property="subDate" column="SUB_DATE"/>
+		<result property="subPrice" column="SUB_PRICE"/>
+		<result property="treeSelect" column="TREE_SELECT"/>
+		<result property="treeAdd" column="TREE_ADD"/>
+		<result property="treeReq" column="TREE_REQ"/>
+	</resultMap>
+	
+<!-- 씨앗(seed) --> 
+   
+   <insert id="insertSub_seed">
+   <![CDATA[
+      INSERT INTO SUB_SEED(SUB_ID, SUB_USER, TAG_TASTE, TAG_CAFF, TAG_EFFECT)
+      VALUES((SELECT NVL(MAX(SUB_ID), 0) + 1 FROM SUB_SEED), #{subUser}, #{tagTaste}, #{tagCaff}, #{tagEffect})
+   ]]>
+   </insert>
+   
+   
+   <update id="updateSub_seed">
+      <![CDATA[
+      UPDATE SUB_SEED 
+      SET TAG_TASTE = #{tagTaste}, TAG_CAFF = #{tagCaff}, TAG_EFFECT = #{tagEffect}
+      WHERE SUB_USER = #{subUser}
+      ]]>
+   </update>
+   
+   <delete id="deleteSub_seed">
+   <![CDATA[
+      DELETE SUB_SEED 
+      WHERE SUB_USER = #{subUser}
+   ]]>
+   </delete>   
+   
+   <select id="getSub_seed" resultType="sub">
+      <![CDATA[
+      SELECT * FROM SUB_SEED 
+      WHERE SUB_USER = #{subUser}
+      ]]>
+   </select>
+	
+<!-- 새싹(leaf) --> 
+   
+   <insert id="insertSub_leaf">
+   <![CDATA[
+      INSERT INTO SUB_LEAF(SUB_ID, SUB_USER, TAG_SEASON, TAG_BASE, TAG_DRINK, TAG_BLEND)
+      VALUES((SELECT NVL(MAX(SUB_ID), 0) + 1 FROM SUB_LEAF), #{subUser}, #{tagSeason}, #{tagBase}, #{tagDrink}, #{tagBlend})
+   ]]>
+   </insert>
+   
+   <update id="updateSub_leaf">
+      <![CDATA[
+      UPDATE SUB_LEAF 
+      SET TAG_SEASON = #{tagSeason}, TAG_BASE = #{tagBase}, TAG_DRINK = #{tagDrink}, TAG_BLEND = #{tagBlend}
+      WHERE SUB_USER = #{subUser}
+      ]]>
+   </update>
+   
+   <delete id="deleteSub_leaf">
+   <![CDATA[
+      DELETE SUB_LEAF 
+      WHERE SUB_USER = #{subUser}
+   ]]>
+   </delete>   
+   
+   <select id="getSub_leaf" resultType="sub">
+      <![CDATA[
+      SELECT * FROM SUB_LEAF 
+      WHERE SUB_USER = #{subUser}
+      ]]>
+   </select>
+   
+	
+	<!-- 나무(tree) --> 
+	
+	<insert id="insertSub_tree">
+	<![CDATA[
+		INSERT INTO SUB_TREE(SUB_ID, TREE_SELECT, SUB_USER, TREE_ADD, SUB_PRICE, TREE_REQ)
+		VALUES((SELECT NVL(MAX(SUB_ID), 0) + 1 FROM SUB_TREE), #{treeSelect}, #{subUser}, #{treeAdd, jdbcType=VARCHAR}, #{subPrice}, #{treeReq, jdbcType=VARCHAR})
+	]]>
+	</insert>
+	
+	<update id="updateSub_tree">
+		<![CDATA[
+		UPDATE SUB_TREE 
+		SET TREE_SELECT = #{treeSelect}, TREE_ADD = #{treeAdd, jdbcType=VARCHAR}, SUB_PRICE = #{subPrice}, TREE_REQ = #{treeReq, jdbcType=VARCHAR}
+		WHERE SUB_USER = #{subUser}
+		]]>
+	</update>
+	
+	<delete id="deleteSub_tree">
+	<![CDATA[
+		DELETE SUB_TREE 
+		WHERE SUB_USER = #{subUser}
+	]]>
+	</delete>	
+	
+	<select id="getSub_tree" resultType="sub" >
+		<![CDATA[
+		SELECT * FROM SUB_TREE
+		WHERE SUB_USER = #{subUser}
+		]]>
+		
+	</select>
+		<select id="getTeaList" resultType="subTea">
+		<![CDATA[
+		SELECT * FROM TEA_T
+		WHERE 1 = 1
+		ORDER BY TT_ID
+		]]>
+	</select>
+	
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BoardDAO">
+
+        <resultMap type="board" id="boardResult">
+                <id property="boardId" column="BOARD_ID" />
+                <result property="boardCate" column="BOARD_CATE" />
+                <result property="boardWriter" column="BOARD_WRITER" />
+                <result property="boardTitle" column="BOARD_TITLE" />
+                <result property="boardContent" column="BOARD_CONTENT" />
+                <result property="boardImgm" column="BOARD_IMGM" />
+                <result property="boardRegdate" column="BOARD_REGDATE" />
+                <result property="replyCount" column="REPLY_COUNT" />
+                <result property="boardLikeCount" column="BOARD_LIKE_COUNT" />
+        </resultMap>
+
+
+        <!-- INSERT INTO BOARD(BOARD_ID, BOARD_CATE, BOARD_WRITER, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, BOARD_IMGM, BOARD_IMG1)
+		VALUES((SELECT NVL(MAX(BOARD_ID), 0) + 1 FROM BOARD), 1, #{boardWriter}, #{boardTitle}, #{boardContent}, 0, #{boardImgm}, #{boardImg1}) -->
+        <insert id="insertBoard">
+                <![CDATA[
+
+		INSERT INTO BOARD(BOARD_ID, BOARD_CATE, BOARD_WRITER, BOARD_TITLE, BOARD_CONTENT,  BOARD_IMGM)
+		VALUES((SELECT NVL(MAX(BOARD_ID), 0) + 1 FROM BOARD), #{boardCate}, #{boardWriter}, #{boardTitle}, #{boardContent},  #{boardImgm})
+		
+	]]>
+        </insert>
+
+        <update id="updateBoard">
+                <![CDATA[
+		UPDATE BOARD 
+		SET BOARD_TITLE = #{boardTitle}, BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_ID = #{boardId}
+		]]>
+        </update>
+
+        <update id="updateReplyCount">
+                <![CDATA[
+		UPDATE BOARD 
+		SET REPLY_COUNT = (SELECT COUNT(REPLY_ID) FROM REPLY WHERE BOARD_ID = #{boardId})
+		WHERE BOARD_ID = #{boardId}
+		]]>
+        </update>
+
+        <update id="updateBoardLikeCount">
+                <![CDATA[
+		UPDATE BOARD 
+		SET BOARD_LIKE_COUNT = (SELECT COUNT(BOARDLIKE_ID) FROM BOARDLIKE WHERE BOARD_ID = #{boardId})
+		WHERE BOARD_ID = #{boardId}
+		]]>
+        </update>
+
+        <delete id="deleteBoard">
+                <![CDATA[
+		DELETE BOARD 
+		WHERE BOARD_ID = #{boardId}
+	]]>
+        </delete>
+
+        <select id="getBoard" resultType="board">
+                <![CDATA[
+		SELECT * FROM BOARD 
+		WHERE BOARD_ID = #{boardId}
+		]]>
+        </select>
+
+        <select id="getBoardListO" resultMap="boardResult">
+                <![CDATA[
+        SELECT *
+        FROM
+        (SELECT ROWNUM as RECNUM, A.* FROM
+                (SELECT BOARD_ID,BOARD_CATE,BOARD_WRITER,BOARD_TITLE,BOARD_CONTENT,BOARD_IMGM,BOARD_REGDATE, REPLY_COUNT
+                        FROM BOARD
+                        WHERE BOARD_CATE = 1
+                        ]]>
+                <if test="searchCondition == 'TITLE'">
+                        AND BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <if test="searchCondition == 'CONTENT'">
+                        AND BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <if test="searchCondition == 'WRITER'">
+                        AND BOARD_WRITER LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <![CDATA[
+                ORDER BY BOARD_ID DESC
+                ) A
+        )
+        WHERE RECNUM > (#{pageNum}-1) * #{amount}
+        AND RECNUM <= #{pageNum} * #{amount}
+        ]]>
+        </select>
+
+        <select id="getBoardListB" resultMap="boardResult">
+                <![CDATA[
+        SELECT *
+        FROM
+        (SELECT ROWNUM as RECNUM, A.* FROM
+                (SELECT BOARD_ID,BOARD_CATE,BOARD_WRITER,BOARD_TITLE,BOARD_CONTENT,BOARD_IMGM,BOARD_REGDATE, REPLY_COUNT
+                FROM BOARD
+                WHERE BOARD_CATE = 2
+                        ]]>
+                <if test="searchCondition == 'TITLE'">
+                        AND BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <if test="searchCondition == 'CONTENT'">
+                        AND BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <if test="searchCondition == 'WRITER'">
+                        AND BOARD_WRITER LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <![CDATA[
+                ORDER BY BOARD_ID DESC
+                ) A
+        )
+		WHERE RECNUM > (#{pageNum}-1) * #{amount}
+        AND RECNUM <= #{pageNum} * #{amount}
+        ]]>
+        </select>
+
+        <select id="getRBoardListR" resultMap="boardResult">
+                <![CDATA[
+        SELECT *
+        FROM
+        (SELECT ROWNUM as RECNUM, A.* FROM
+                (SELECT BOARD_ID,BOARD_CATE,BOARD_WRITER,BOARD_TITLE,BOARD_CONTENT,BOARD_IMGM,BOARD_REGDATE, REPLY_COUNT, BOARD_LIKE_COUNT
+                FROM BOARD
+                WHERE BOARD_CATE = 3
+                ]]>
+                <if test="searchCondition == 'TITLE'">
+                        AND BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <if test="searchCondition == 'CONTENT'">
+                        AND BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <if test="searchCondition == 'WRITER'">
+                        AND BOARD_WRITER LIKE '%' || #{searchKeyword} || '%'
+                        </if>
+                <![CDATA[
+                ORDER BY BOARD_ID DESC
+                ) A
+        )
+		WHERE RECNUM > (#{pageNum}-1) * #{amountR}
+        AND RECNUM <= #{pageNum} * #{amountR}
+        ]]>
+        </select>
+
+        <select id="getTotalCnt" resultType="int">
+                SELECT count(*)
+        FROM BOARD
+        WHERE BOARD_CATE = 1
+                <if test="searchCondition == 'TITLE'">
+        AND BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+        </if>
+                <if test="searchCondition == 'CONTENT'">
+        AND BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+        </if>
+                <if test="searchCondition == 'WRITER'">
+        AND BOARD_WRITER LIKE '%' || #{searchKeyword} || '%'
+        </if>
+
+        </select>
+
+        <select id="getTotalCntB" resultType="int">
+                SELECT count(*)
+        FROM BOARD
+        WHERE BOARD_CATE = 2
+                <if test="searchCondition == 'TITLE'">
+        AND BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+        </if>
+                <if test="searchCondition == 'CONTENT'">
+        AND BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+        </if>
+                <if test="searchCondition == 'WRITER'">
+        AND BOARD_WRITER LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        </select>
+
+        <select id="getTotalCntR" resultType="int">
+                SELECT count(*)
+        FROM BOARD
+        WHERE BOARD_CATE = 3
+                <if test="searchCondition == 'TITLE'">
+        AND BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+        </if>
+                <if test="searchCondition == 'CONTENT'">
+        AND BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+        </if>
+                <if test="searchCondition == 'WRITER'">
+        AND BOARD_WRITER LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        </select>
+
+        <select id="getLikeChk" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARDLIKE
+		WHERE BOARD_ID = #{boardId}
+		AND MEMBER_ID = #{memberId}
+	</select>
+
+        <select id="getOrderList" resultMap="boardResult">
+		SELECT *
+		FROM BOARD
+		WHERE BOARD_LIKE_COUNT > 0 
+		ORDER BY BOARD_LIKE_COUNT DESC, BOARD_ID DESC
+	</select>
+
+</mapper>

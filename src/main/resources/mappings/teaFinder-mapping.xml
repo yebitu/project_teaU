@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TeaFinderDAO">	
+
+		<resultMap type="shop" id="shop">
+			<id property="teaId" column="TEA_ID" />
+			<result property="teaName" column="TEA_NAME" />
+			<result property="teaImg" column="TEA_IMG" />
+			<result property="teaInfo" column="TEA_INFO" />
+			<result property="tagBase" column="TAG_BASE" />	
+			<result property="tagCaff" column="TAG_CAFF" />
+			<result property="tagSeason" column="TAG_SEASON" />
+			<result property="tagDrink" column="TAG_DRINK" />
+		</resultMap>
+	
+		<select id="getTeaFinderList" resultType="shop">
+		<![CDATA[
+		SELECT TEA_ID, TEA_NAME, TEA_IMG, TAG_BASE
+		FROM TEA
+		WHERE 1=1
+		]]>
+		<if test="tagCaff != null and tagCaff != ''">
+			AND TAG_CAFF LIKE '%'||#{tagCaff}||'%'
+		</if>
+		<if test="tagUser != null and tagUser != ''">
+			AND TAG_USER LIKE '%'||#{tagUser}||'%'
+		</if>
+		<if test="tagSeason != null and tagSeason != ''">
+			AND TAG_SEASON LIKE '%'||#{tagSeason}||'%'
+		</if>
+		<if test="tagDrink != null and tagDrink != ''">
+			AND TAG_DRINK LIKE '%'||#{tagDrink}||'%'
+		</if>	
+		ORDER BY TEA_ID DESC
+	</select>
+	
+</mapper>

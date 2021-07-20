@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReplyDAO">
+
+	<resultMap type="reply" id="replyResult">
+		<id property="replyId" column="REPLY_ID" />
+		<result property="boardId" column="BOARD_ID" />
+		<result property="replyWriter" column="REPLY_WRITER" />
+		<result property="replyContent" column="REPLY_CONTENT" />
+		<result property="replyRegdate" column="REPLY_REGDATE" />
+	</resultMap>
+
+	<insert id="insertReply">
+		<![CDATA[
+		INSERT INTO REPLY(REPLY_ID, BOARD_ID, REPLY_WRITER, REPLY_CONTENT)
+		VALUES((SELECT NVL(MAX(REPLY_ID), 0) + 1 FROM REPLY), #{boardId}, #{replyWriter}, #{replyContent})
+	]]>
+	</insert>
+
+	<delete id="deleteReply">
+		<![CDATA[
+		DELETE REPLY 
+		WHERE REPLY_ID = #{replyId}
+	]]>
+	</delete>
+	
+ 	<select id="listReply" resultType="reply">
+		<![CDATA[
+		SELECT *
+		FROM REPLY
+		WHERE BOARD_ID = #{boardId}
+		ORDER BY REPLY_ID 
+	]]> 
+	</select>
+
+</mapper>

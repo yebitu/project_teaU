@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ShopDAO">
+	
+	<insert id="insertShop">
+	<![CDATA[
+	INSERT INTO TEA(TEA_ID, ORDER_CATE, TEA_NAME, TEA_PRICE, TEA_IMG, TEA_INFO, TAG_BASE, TAG_CAFF, TAG_SEASON, TAG_USER, TAG_TASTE, TAG_EFF, TAG_BLEND, TAG_DRINK)
+	VALUES((SELECT NVL(MAX(TEA_ID),0) + 1 FROM TEA), #{orderCate}, #{teaName}, #{teaPrice}, #{teaImg}, #{teaInfo}, #{tagBase , jdbcType=VARCHAR}, #{tagCaff , jdbcType=VARCHAR}, #{tagSeason , jdbcType=VARCHAR}, #{tagUser , jdbcType=VARCHAR}, #{tagTaste , jdbcType=VARCHAR}, #{tagEff , jdbcType=VARCHAR}, #{tagBlend , jdbcType=VARCHAR}, #{tagDrink , jdbcType=VARCHAR})
+	]]>
+	</insert>
+	
+	
+	<update id="updateShop" > 
+	<![CDATA[
+	UPDATE TEA
+	SET ORDER_CATE = #{orderCate}, TEA_NAME = #{teaName},TEA_PRICE = #{teaPrice}, TEA_IMG = #{teaImg}, TEA_INFO = #{teaInfo}, TAG_BASE = #{tagBase, jdbcType=VARCHAR}, TAG_CAFF =#{tagCaff, jdbcType=VARCHAR} , TAG_SEASON = #{tagSeason, jdbcType=VARCHAR}, TAG_USER = #{tagUser, jdbcType=VARCHAR}, TAG_TASTE = #{tagTaste, jdbcType=VARCHAR}, TAG_EFF= #{tagEff, jdbcType=VARCHAR}, TAG_BLEND = #{tagBlend, jdbcType=VARCHAR}, TAG_DRINK = #{tagDrink, jdbcType=VARCHAR}
+	WHERE TEA_ID = #{teaId}
+	]]>
+	</update>
+
+	<delete id="deleteShop">
+	<![CDATA[
+	DELETE TEA
+	WHERE TEA_ID = #{teaId}
+	]]>
+	</delete>
+	
+	<select id="getShop" resultType="shop">
+	<![CDATA[
+	SELECT * FROM TEA 
+	WHERE TEA_ID = #{teaId}
+	]]>
+	</select>
+
+	<select id="getShopList" resultType="shop">
+	<![CDATA[
+	SELECT * FROM TEA
+	ORDER BY TEA_ID DESC
+	]]>
+	</select>
+	
+	<select id="selectTeaId" resultType="int">
+	<![CDATA[
+	SELECT MAX(TEA_ID) FROM TEA
+	]]>
+	</select>
+	
+	<insert id="insertShopFile" parameterType="hashmap">
+	<![CDATA[
+	INSERT INTO IMG_FILE(TEA_ID, IMG_ID, TEA_IMG)
+	VALUES(#{teaId}, #{imgId}, #{teaImg})
+	]]>
+	</insert>
+	
+	<update id="updateShopFile" parameterType="hashmap">
+	<![CDATA[
+	UPDATE IMG_FILE
+	SET TEA_IMG = #{teaImg}
+	WHERE TEA_ID = #{teaId} AND IMG_ID = #{imgId}
+	]]>
+	</update>
+	
+	<delete id="deleteShopFile">
+	<![CDATA[
+	DELETE FROM IMG_FILE
+	WHERE TEA_ID = #{teaId}
+	]]>
+	</delete>
+	
+	<select id="getImg" resultType="shop">
+	<![CDATA[
+	SELECT * FROM IMG_FILE
+	WHERE TEA_ID = #{teaId}
+	]]>
+	</select>
+	
+</mapper>
