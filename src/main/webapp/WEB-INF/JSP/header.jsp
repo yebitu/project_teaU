@@ -11,7 +11,7 @@ $(document).ready(function(){
    getMemberInfo();
 });
 
-   
+// 전역변수 선언
 let id = '';
 let role = '';
 // 세션체크 JSON 전송
@@ -37,9 +37,6 @@ function sessionCheck(obj) {
       }
 
    }
-   console.log("id=" + id);
-
-   logText(id);
 }
 
 

@@ -101,11 +101,11 @@ th {
             if (pwd1 == pwd2) {
                $("#alert-success").show();
                $("#alert-danger").hide();
-               $("#joinsubmit").removeAttr("disabled");
+               $("#editSubmit").removeAttr("disabled");
             } else {
                $("#alert-success").hide();
                $("#alert-danger").show();
-               $("#joinsubmit").attr("disabled", "disabled");
+               $("#editSubmit").attr("disabled", "disabled");
             }
          }
       });
@@ -312,7 +312,7 @@ th {
                               </tbody>
                            </table>
                            <div class="submit_btn" style="text-align: center">
-                              <button type="submit" class="btn btn-primary btn-radio">회원정보
+                              <button type="submit" id="editSubmit" class="btn btn-primary btn-radio">회원정보
                                  변경</button>
                            </div>
                         </div>
